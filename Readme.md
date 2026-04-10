@@ -1,5 +1,14 @@
 # RagDoc
 
+1. Setup and run locally
+- Setup Ollama : `curl -fsSL https://ollama.com/install.sh | sh`
+    - Pull one of both models, I preferred qwen3:latest and nomic-embed-text-v2-moe
+    - llama:3b
+    - qwen3:latest
+    - nomic-embed-text-v2-moe or nomic-embed-text:latest 
+- Setup Docker : `https://docs.docker.com/compose/install/`
+- Create .env files with following content
+
 
 ./.env
 ```

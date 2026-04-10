@@ -1,0 +1,124 @@
+.container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-top: 24px;
+}
+
+/* Panels */
+.panel {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 18px;
+  padding: 24px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+}
+
+/* Titles */
+.title {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+/* Form */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.textarea {
+  min-height: 200px;
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  resize: vertical;
+  font-size: 14px;
+  outline: none;
+}
+
+.input {
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #d1d5db;
+}
+
+.button {
+  padding: 12px;
+  border-radius: 12px;
+  border: none;
+  background: #111827;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Answer */
+.answerBox {
+  min-height: 200px;
+  padding: 12px;
+  border-radius: 12px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  white-space: pre-wrap;
+  line-height: 1.6;
+}
+
+/* Sources */
+.sourcesSection {
+  margin-top: 18px;
+}
+
+.sourcesTitle {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: #111827;
+}
+
+.sourcesList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 180px;
+  overflow-y: auto;
+  padding-right: 6px;
+}
+
+.sourceItem {
+  background: #f3f4f6;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.fileName {
+  font-size: 13px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.filePath {
+  font-size: 12px;
+  color: #6b7280;
+  margin-top: 4px;
+  word-break: break-all;
+}
+
+.noSources {
+  font-size: 13px;
+  color: #9ca3af;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .container {
+    grid-template-columns: 1fr;
+  }
+}

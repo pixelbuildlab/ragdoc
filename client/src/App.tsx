@@ -1,6 +1,6 @@
 import React from 'react'
 import { useNavigate } from 'react-router'
-import './App.css'
+import styles from './styles/App.module.css'
 import { useUserStore } from './useUserStore'
 
 function App() {
@@ -62,33 +62,53 @@ function App() {
   }, [navigate, setupUser, user, workspaces])
 
   return (
-    <>
-      <h5>Please sign up</h5>
-      <form
-        action={async (formData) => {
-          const email = formData.get('email')
-          if (!email) {
-            return
-          }
+    <div className={styles.page}>
+      <div className={styles.card}>
+        <div className={styles.brand}>DocRAG AI</div>
+        <h1 className={styles.title}>Welcome back</h1>
+        <p className={styles.subtitle}>
+          Sign up with your email to continue to your workspace.
+        </p>
 
-          localStorage.removeItem('BOT_USER_EMAIL')
-          localStorage.setItem('BOT_USER_EMAIL', email.toString())
-          await setupUser(email.toString())
-        }}
-      >
-        <label htmlFor='email'>Email: &nbsp;</label>
-        <input
-          id='email'
-          name='email'
-          type='email'
-          autoComplete='false'
-        />
-        <br />
-        <br />
+        <form
+          className={styles.form}
+          onSubmit={async (e) => {
+            e.preventDefault()
+            const formData = new FormData(e.currentTarget)
+            const email = formData.get('email')
+            if (!email) return
 
-        <button type='submit'>Submit</button>
-      </form>
-    </>
+            localStorage.removeItem('BOT_USER_EMAIL')
+            localStorage.setItem('BOT_USER_EMAIL', email.toString())
+            await setupUser(email.toString())
+          }}
+        >
+          <div className={styles.formGroup}>
+            <label
+              className={styles.label}
+              htmlFor='email'
+            >
+              Email address
+            </label>
+            <input
+              className={styles.input}
+              id='email'
+              name='email'
+              type='email'
+              placeholder='you@example.com'
+              autoComplete='off'
+            />
+          </div>
+
+          <button
+            className={styles.button}
+            type='submit'
+          >
+            Continue to dashboard
+          </button>
+        </form>
+      </div>
+    </div>
   )
 }
 

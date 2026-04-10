@@ -6,8 +6,10 @@ from src.vector_db import QdrantService
 from src.database_service import DatabaseService
 from src.data_processor import parse_pdf_chunk
 from src.ai_helper import run_prompt, generate_text_embeddings
+from src.utils import sanitize_query
 from src.constants import USER_COLLECTIONS, PROMPT
 from src.config import CONFIDENT_THRESHOLD, INNGEST_API_URL
+
 from src.custom_types import (
     RAGChunksSource,
     RAGQueryResults,
@@ -106,6 +108,17 @@ class InngestService:
 
         if not workspace_id:
             raise ValueError("Missing required 'workspace_id' in event data")
+
+        # sanitize before anything else
+        try:
+            query = sanitize_query(query)
+        except ValueError:
+            return {
+                "query": query,
+                "result": "Sorry, I cannot help with this query.",
+                "context_len": 0,
+                "context": [],
+            }
 
         async def _process_chunks(query: list[str]) -> list[str] | None:
             embeddings = await generate_text_embeddings(query)

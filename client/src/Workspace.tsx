@@ -1,5 +1,6 @@
 import { Link, useParams } from 'react-router'
 import { useUserStore } from './useUserStore'
+import styles from './styles/Workspace.module.css'
 
 export default function Workspace() {
   const params = useParams()
@@ -28,6 +29,7 @@ export default function Workspace() {
       )
 
       const workspacesData = await response.json()
+
       if (workspacesData.workspaces) {
         setWorkspaces(workspacesData.workspaces)
       }
@@ -37,76 +39,94 @@ export default function Workspace() {
   }
 
   return (
-    <div>
-      <div style={{ display: 'flex', gap: '240px' }}>
-        <div>
+    <div className={styles.wrapper}>
+      {/* Workspaces list */}
+      <div className={styles.card}>
+        <h3 className={styles.title}>Workspaces</h3>
+
+        <div className={styles.list}>
           {workspaces.map((workspace) => (
-            <div key={`${workspace.id}`}>
+            <div
+              key={workspace.id}
+              className={styles.item}
+            >
               <Link
                 to={`/u/${params.userID}/${workspace.id}`}
-                style={{ textDecoration: 'none' }}
-                title={workspace.description ?? ''}
+                className={styles.link}
+                title={`${workspace.description} - ${workspace.tags}`}
               >
-                <b>{workspace.name}</b>
+                {workspace.name}
               </Link>
-              {params.workspaceID
-                ? workspace.id === +params.workspaceID
-                  ? ' **'
-                  : ''
-                : ''}
+
+              {params.workspaceID && workspace.id === +params.workspaceID ? (
+                <span className={styles.active}>●</span>
+              ) : null}
             </div>
           ))}
         </div>
-        <div>
-          Files
-          <div
-            style={{ height: '120px', overflow: 'auto', paddingRight: '20px' }}
-          >
-            {uploads.length ? (
-              uploads.map((file) => (
-                <div key={`${file.id}`}>{file.file_name}</div>
-              ))
-            ) : (
-              <>No Files</>
-            )}
-          </div>
-        </div>
+      </div>
 
-        <form action={createWorkspaces}>
-          <b>Create workspace</b>
-          <br />
-          <label htmlFor='name'>Name</label>
-          <br />
+      {/* Files */}
+      <div className={styles.card}>
+        <h3 className={styles.title}>Files</h3>
+
+        <div className={styles.files}>
+          {uploads.length ? (
+            uploads.map((file) => (
+              <div
+                key={file.id}
+                className={styles.fileItem}
+              >
+                {file.file_name}
+              </div>
+            ))
+          ) : (
+            <div className={styles.empty}>No Files</div>
+          )}
+        </div>
+      </div>
+
+      {/* Create workspace */}
+      <div className={styles.card}>
+        <h3 className={styles.title}>Create Workspace</h3>
+
+        <form
+          className={styles.form}
+          onSubmit={async (e) => {
+            e.preventDefault()
+            const formData = new FormData(e.currentTarget)
+            await createWorkspaces(formData)
+          }}
+        >
           <input
-            autoComplete='false'
+            className={styles.input}
             type='text'
             name='name'
-            id='name'
+            placeholder='Workspace name'
           />
-          <br />
-          <label htmlFor='description'>Description</label>
-          <br />
+
           <input
-            autoComplete='false'
+            className={styles.input}
             type='text'
             name='description'
-            id='description'
+            placeholder='Description'
           />
-          <br />
-          <label htmlFor='tags'>Tags</label>
-          <br />
+
           <input
-            autoComplete='false'
+            className={styles.input}
             type='text'
             name='tags'
-            id='tags'
+            placeholder='Tags (comma separated)'
           />
-          <br />
-          <br />
-          <button type='submit'>Create</button>
+
+          <button
+            type='submit'
+            className={styles.button}
+          >
+            Create
+          </button>
         </form>
       </div>
-      <br />
     </div>
   )
 }

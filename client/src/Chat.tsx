@@ -3,6 +3,7 @@ import { useUserStore } from './useUserStore'
 import Workspace from './Workspace'
 import React from 'react'
 import AskContainer from './AskContainer'
+import styles from './styles/Chat.module.css'
 
 const getUploads = async (userID: string, workspaceID: string) => {
   const uploadParams = {
@@ -71,9 +72,7 @@ function Chat() {
         if (data.file_key && data.file_path) {
           await fetch(`${import.meta.env.VITE_API_URL}/ingest`, {
             method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               user_id: params.userID,
               file_path: data.file_path,
@@ -89,31 +88,62 @@ function Chat() {
   }
 
   return (
-    <div>
-      <hr />
-      <br />
-      <div>
-        <form action={formAction}>
-          <label htmlFor='file'>Upload Document</label>
+    <div className={styles.page}>
+      {/* Header */}
+      <div className={styles.header}>
+        <div>
+          <h1 className={styles.title}>Workspace Dashboard</h1>
+          <p className={styles.subtitle}>
+            Upload documents, manage workspaces, and ask AI questions
+          </p>
+        </div>
+
+        <button
+          className={styles.logoutBtn}
+          onClick={clearUser}
+        >
+          Clear User
+        </button>
+      </div>
+
+      {/* Upload Section */}
+      <div className={styles.card}>
+        <h2 className={styles.sectionTitle}>Upload Document</h2>
+
+        <form
+          className={styles.uploadForm}
+          onSubmit={async (e) => {
+            e.preventDefault()
+            const formData = new FormData(e.currentTarget)
+            await formAction(formData)
+          }}
+        >
           <input
             type='file'
             name='file'
             id='file'
             accept='.pdf'
+            className={styles.fileInput}
           />
-          <button type='submit'>Upload</button>
+
+          <button
+            className={styles.primaryBtn}
+            type='submit'
+          >
+            Upload PDF
+          </button>
         </form>
       </div>
-      <hr />
 
+      {/* Ask AI */}
       <AskContainer />
-      <hr />
-      <br />
 
-      <button onClick={clearUser}>Clear User</button>
-      <hr />
-      <div>
-        <Workspace />
+      {/* Bottom Grid */}
+      <div style={{ marginTop: '20px' }}></div>
+      <div className={styles.grid}>
+        <div className={styles.card}>
+          <Workspace />
+        </div>
       </div>
     </div>
   )

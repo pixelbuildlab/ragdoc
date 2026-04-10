@@ -17,6 +17,6 @@ OLLAMA_EMBED_MODEL = "nomic-embed-text:latest"
 OLLAMA_COMPLETION_MODEL = "qwen3:latest"
 # llama:3b
 
-CONFIDENT_THRESHOLD = 0.40
+CONFIDENT_THRESHOLD = 0.2
 
 INNGEST_API_URL = os.getenv("INGGEST_API_URL")
