@@ -1,0 +1,47 @@
+services:
+  app:
+    build: .
+    container_name: python_uv_app
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    volumes:
+      - ./app:/app/app
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: qdrant-local
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - qdrant_storage:/qdrant/storage
+    restart: unless-stopped
+  db:
+    image: postgres:latest
+    restart: always
+    ports:
+      - 5432:5432
+    env_file:
+      - .env
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d ${POSTGRES_DB} -U ${POSTGRES_USER}"]
+      interval: 1s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - ./db-data/:/var/lib/postgresql/
+  inngest:
+    image: node:krypton-alpine
+    working_dir: /app
+    ports:
+      - 8288:8288
+    env_file:
+      - .env
+    command: npx --yes inngest-cli dev -u ${API_URL}
+    depends_on:
+      - app
+
+volumes:
+  qdrant_storage:
+  db-data:
