@@ -26,7 +26,7 @@ function Chat() {
   const params = useParams()
   const navigate = useNavigate()
 
-  const { clearStore, setUploads } = useUserStore()
+  const { clearStore, setUploads, user } = useUserStore()
 
   const clearUser = () => {
     clearStore()
@@ -98,12 +98,15 @@ function Chat() {
           </p>
         </div>
 
-        <button
-          className={styles.logoutBtn}
-          onClick={clearUser}
-        >
-          Clear User
-        </button>
+        <div>
+          <p>{user?.email}</p>
+          <button
+            className={styles.logoutBtn}
+            onClick={clearUser}
+          >
+            Clear User
+          </button>
+        </div>
       </div>
 
       {/* Upload Section */}

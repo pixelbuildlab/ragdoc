@@ -17,6 +17,11 @@ OLLAMA_EMBED_MODEL = "nomic-embed-text:latest"
 OLLAMA_COMPLETION_MODEL = "qwen3:latest"
 # llama:3b
 
-CONFIDENT_THRESHOLD = 0.2
+CONFIDENT_THRESHOLD = 0.05
 
 INNGEST_API_URL = os.getenv("INGGEST_API_URL")
+
+
+DB_NAME = os.getenv("POSTGRES_DB")
+DB_USER = os.getenv("POSTGRES_USER")
+DB_PASSWORD = os.getenv("POSTGRES_PASSWORD")

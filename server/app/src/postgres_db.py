@@ -2,17 +2,14 @@ import psycopg
 import logging
 import time
 import traceback
+from src.config import DB_NAME, DB_USER, DB_PASSWORD
 
 logger = logging.getLogger(__name__)
 
 
 def get_connection():
     return psycopg.connect(
-        host="db",
-        port=5432,
-        dbname="rag_bot",
-        user="postgres",
-        password="postgres",
+        host="db", port=5432, dbname=DB_NAME, user=DB_USER, password=DB_PASSWORD
     )
 
 
