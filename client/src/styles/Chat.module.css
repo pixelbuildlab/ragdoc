@@ -51,6 +51,17 @@
   margin-bottom: 20px;
 }
 
+.inputCard {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+  margin-bottom: 20px;
+  display: flex;
+  gap: 20px;
+}
+
 /* Section title */
 .sectionTitle {
   font-size: 18px;

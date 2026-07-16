@@ -77,3 +77,13 @@ class QueryPDF(BaseModel):
     workspace_id: int
     top_k: int
     query: str
+
+
+class LiveDoc(BaseModel):
+    raw_document: str | None
+
+
+class IngestLiveDocument(BaseModel):
+    user_id: int
+    url_list: str
+    workspace_id: int

@@ -29,7 +29,7 @@ services:
       - qdrant_storage:/qdrant/storage
     restart: unless-stopped
   db:
-    image: postgres:latest
+    image: pgvector/pgvector:pg18-bookworm
     restart: always
     ports:
       - 5432:5432

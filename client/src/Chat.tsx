@@ -87,6 +87,29 @@ function Chat() {
     }
   }
 
+  const formLiveUrlAction = async (formData: FormData) => {
+    const url = formData.get('url') as File
+
+    if (url && params.userID && params.workspaceID) {
+      try {
+        await fetch(`${import.meta.env.VITE_API_URL}/ingest_live_url`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            user_id: params.userID,
+            url_list: url,
+            workspace_id: params.workspaceID,
+          }),
+        })
+
+        const uploads = await getUploads(params.userID, params.workspaceID)
+        setUploads(uploads)
+      } catch (error) {
+        console.log('Error live feeding', error)
+      }
+    }
+  }
+
   return (
     <div className={styles.page}>
       {/* Header */}
@@ -110,32 +133,60 @@ function Chat() {
       </div>
 
       {/* Upload Section */}
-      <div className={styles.card}>
-        <h2 className={styles.sectionTitle}>Upload Document</h2>
+      <div className={styles.inputCard}>
+        <div>
+          <h2 className={styles.sectionTitle}>Upload Document</h2>
 
-        <form
-          className={styles.uploadForm}
-          onSubmit={async (e) => {
-            e.preventDefault()
-            const formData = new FormData(e.currentTarget)
-            await formAction(formData)
-          }}
-        >
-          <input
-            type='file'
-            name='file'
-            id='file'
-            accept='.pdf'
-            className={styles.fileInput}
-          />
-
-          <button
-            className={styles.primaryBtn}
-            type='submit'
+          <form
+            className={styles.uploadForm}
+            onSubmit={async (e) => {
+              e.preventDefault()
+              const formData = new FormData(e.currentTarget)
+              await formAction(formData)
+            }}
           >
-            Upload PDF
-          </button>
-        </form>
+            <input
+              type='file'
+              name='file'
+              id='file'
+              accept='.pdf'
+              className={styles.fileInput}
+            />
+
+            <button
+              className={styles.primaryBtn}
+              type='submit'
+            >
+              Upload PDF
+            </button>
+          </form>
+        </div>
+        <div>
+          <h2 className={styles.sectionTitle}>Feed Live link</h2>
+
+          <form
+            className={styles.uploadForm}
+            onSubmit={async (e) => {
+              e.preventDefault()
+              const formData = new FormData(e.currentTarget)
+              await formLiveUrlAction(formData)
+            }}
+          >
+            <input
+              type='text'
+              name='url'
+              id='url'
+              className={styles.fileInput}
+            />
+
+            <button
+              className={styles.primaryBtn}
+              type='submit'
+            >
+              Feed link
+            </button>
+          </form>
+        </div>
       </div>
 
       {/* Ask AI */}

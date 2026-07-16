@@ -4,11 +4,17 @@ from pathlib import Path
 import uuid
 import logging
 import inngest
-import datetime
 from inngest import fast_api
 from src.inngest_service import InngestService
 from src.database_service import DatabaseService
-from src.custom_types import UserRegister, IngestDocument, CreateWorkspace, QueryPDF
+from src.custom_types import (
+    UserRegister,
+    IngestDocument,
+    CreateWorkspace,
+    QueryPDF,
+    IngestLiveDocument,
+)
+from src.live_feed import LiveFeedService
 
 inngest_client = inngest.Inngest(
     app_id="rag_bot",
@@ -33,6 +39,13 @@ async def rag_inngest_pdf(ctx: inngest.Context):
 )
 async def query_pdf(ctx: inngest.Context):
     return await InngestService(ctx).query_pdf()
+
+
+@inngest_client.create_function(
+    fn_id="Ingest Live Url", trigger=inngest.TriggerEvent(event="rag/ingest_live_url")
+)
+async def rag_inngest_url(ctx: inngest.Context):
+    return await InngestService(ctx).rag_ingest_live_url()
 
 
 app = FastAPI()
@@ -155,8 +168,34 @@ async def upload(user_id: int, workspace_id: int):
     return {"uploads": uploads}
 
 
+@app.post("/ingest_live_url")
+async def test(live_req: IngestLiveDocument):
+    file_key = str(uuid.uuid4())
+    DatabaseService().create_file_upload(
+        file_key,
+        int(live_req.user_id),
+        int(live_req.workspace_id),
+        live_req.url_list,
+        str(live_req.url_list),
+    )
+    inngest_runs = await inngest_client.send(
+        inngest.Event(
+            name="rag/ingest_live_url",
+            data={
+                "user_id": live_req.user_id,
+                "url_list": live_req.url_list,
+                "workspace_id": live_req.workspace_id,
+            },
+        )
+    )
+
+    run_data = await InngestService(None).get_run_output(inngest_runs[0])
+
+    return {"job_run_data": run_data["output"]}
+
+
 fast_api.serve(
     app,
     inngest_client,
-    functions=[rag_inngest_pdf, query_pdf],
+    functions=[rag_inngest_pdf, query_pdf, rag_inngest_url],
 )
