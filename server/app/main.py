@@ -1,4 +1,5 @@
-from fastapi import FastAPI, UploadFile, File, Form, Request
+from fastapi import FastAPI, UploadFile, File, Form
+from contextlib import asynccontextmanager
 from fastapi.middleware.cors import CORSMiddleware
 from pathlib import Path
 import uuid
@@ -14,11 +15,12 @@ from src.custom_types import (
     QueryPDF,
     IngestLiveDocument,
 )
-from src.live_feed import LiveFeedService
+
+logger = logging.getLogger("uvicorn")
 
 inngest_client = inngest.Inngest(
     app_id="rag_bot",
-    logger=logging.getLogger("uvicorn"),
+    logger=logger,
     is_production=False,
     serializer=inngest.PydanticSerializer(),
 )
@@ -48,7 +50,16 @@ async def rag_inngest_url(ctx: inngest.Context):
     return await InngestService(ctx).rag_ingest_live_url()
 
 
-app = FastAPI()
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    logger.info("Application is starting up...")
+    logger.info("Authenticate database...")
+    await DatabaseService().authenticate()
+    yield
+    logger.info("Application is shutting down...")
+
+
+app = FastAPI(lifespan=lifespan)
 
 origins = ["*"]
 
@@ -73,39 +84,55 @@ async def register(user: UserRegister):
         return {"message": "Failure", "error": str(e)}
 
 
+async def file_saver(file: UploadFile, user_id: str, workspace_id: str):
+    file_key = str(uuid.uuid4())
+
+    user_folder = UPLOAD_DIR / user_id / workspace_id
+    user_folder.mkdir(parents=True, exist_ok=True)
+
+    file_path = user_folder / file.filename
+
+    file_upload_status = DatabaseService().create_file_upload(
+        file_key, int(user_id), int(workspace_id), file.filename, str(file_path)
+    )
+
+    if not file_upload_status:
+        raise Exception("Failed to upload file")
+
+    with open(file_path, "wb") as f:
+        f.write(await file.read())
+
+    return file_key, file_path
+
+
 @app.post("/upload")
 async def upload(
     user_id: str = Form(...),
     workspace_id: str = Form(...),
-    file: UploadFile = File(...),
+    files: list[UploadFile] = list[File(...)],
 ):
     try:
         if not user_id or not workspace_id:
             raise Exception("Missing values")
-        if file.content_type != "application/pdf":
-            raise Exception(".pdf file required")
+        # if [file.content_type != "application/pdf" for file in files]:
+        #     raise Exception(".pdf file required")
 
-        file_key = str(uuid.uuid4())
+        if len(files) > 5:
+            raise Exception("Maximum of 5 files allowed")
 
-        user_folder = UPLOAD_DIR / user_id / workspace_id
-        user_folder.mkdir(parents=True, exist_ok=True)
-
-        file_path = user_folder / file.filename
-
-        file_upload_status = DatabaseService().create_file_upload(
-            file_key, int(user_id), int(workspace_id), file.filename, str(file_path)
-        )
-
-        if not file_upload_status:
-            raise Exception("Failed to upload file")
-
-        with open(file_path, "wb") as f:
-            f.write(await file.read())
+        files_list = list()
+        for file in files:
+            file_key, file_path = await file_saver(file, user_id, workspace_id)
+            files_list.append(
+                {
+                    "file_key": str(file_key),
+                    "file_path": str(file_path),
+                }
+            )
 
         return {
             "message": "File uploaded successfully",
-            "file_key": str(file_key),
-            "file_path": str(file_path),
+            "files_list": files_list,
         }
 
     except Exception as e:
@@ -195,7 +222,7 @@ async def test(live_req: IngestLiveDocument):
 
 
 fast_api.serve(
-    app,
-    inngest_client,
+    app=app,
+    client=inngest_client,
     functions=[rag_inngest_pdf, query_pdf, rag_inngest_url],
 )

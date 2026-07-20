@@ -10,6 +10,16 @@ logger = logging.getLogger()
 
 
 class DatabaseService:
+    async def authenticate(self) -> bool:
+        try:
+            query(
+                "SELECT 1+1;",
+            )
+            return True
+        except Exception as e:
+            print(f"Error authenticating database: {e}")
+            return False
+
     def insert_user(self, email: str, collection_name: str) -> bool:
         try:
             query(

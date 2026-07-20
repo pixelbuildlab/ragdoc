@@ -45,16 +45,23 @@ function Chat() {
   }, [params.userID, params.workspaceID, setUploads])
 
   const formAction = async (formData: FormData) => {
-    const file = formData.get('file') as File
+    const files = formData.getAll('files') as File[]
     const form = new FormData()
 
-    if (file.type !== 'application/pdf') {
-      console.log('Select file')
+    if (files.some((file) => file.type !== 'application/pdf')) {
+      alert('Error: Only PDF files are allowed.')
       return
     }
 
-    if (file && params.userID && params.workspaceID) {
-      form.append('file', file)
+    if (files.length > 5) {
+      alert('Select 5 max maximum files')
+      return
+    }
+
+    if (files.length && params.userID && params.workspaceID) {
+      files.forEach((file) => {
+        form.append('files', file)
+      })
       form.append('user_id', params.userID)
       form.append('workspace_id', params.workspaceID)
 
@@ -65,22 +72,27 @@ function Chat() {
         })
 
         const data = await response.json()
+        const fileList = data.files_list || []
 
         const uploads = await getUploads(params.userID, params.workspaceID)
         setUploads(uploads)
 
-        if (data.file_key && data.file_path) {
-          await fetch(`${import.meta.env.VITE_API_URL}/ingest`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              user_id: params.userID,
-              file_path: data.file_path,
-              workspace_id: params.workspaceID,
-              file_key: data.file_key,
-            }),
-          })
-        }
+        await Promise.all(
+          fileList.map((item: { file_key: string; file_path: string }) => {
+            if (item.file_key && item.file_path) {
+              fetch(`${import.meta.env.VITE_API_URL}/ingest`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  user_id: params.userID,
+                  file_path: item.file_path,
+                  workspace_id: params.workspaceID,
+                  file_key: item.file_key,
+                }),
+              })
+            }
+          }),
+        )
       } catch (error) {
         console.log('Error', error)
       }
@@ -136,6 +148,7 @@ function Chat() {
       <div className={styles.inputCard}>
         <div>
           <h2 className={styles.sectionTitle}>Upload Document</h2>
+          <span>Select max 5 PDF</span>
 
           <form
             className={styles.uploadForm}
@@ -144,12 +157,14 @@ function Chat() {
               const formData = new FormData(e.currentTarget)
               await formAction(formData)
             }}
+            encType='multipart/form-data'
           >
             <input
               type='file'
-              name='file'
-              id='file'
+              name='files'
+              id='files'
               accept='.pdf'
+              multiple={true}
               className={styles.fileInput}
             />
 
@@ -164,6 +179,7 @@ function Chat() {
         <div>
           <h2 className={styles.sectionTitle}>Feed Live link</h2>
 
+          <span>Input url</span>
           <form
             className={styles.uploadForm}
             onSubmit={async (e) => {

@@ -155,52 +155,52 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 
 ALTER TABLE ONLY public.workspaces ALTER COLUMN id SET DEFAULT nextval('public.workspaces_id_seq'::regclass);
 
-
+-- Disabled COPY due to issued with init
 --
 -- Data for Name: file_uploads; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.file_uploads (id, user_id, workspace_id, file_name, file_path, file_key, uploaded_at) FROM stdin;
-55	7	10	M.Waqar - Full Stack Developer.pdf	uploads/7/10/M.Waqar - Full Stack Developer.pdf	6f5019bd-d8ec-4560-876f-43e9ba4eabc9	2026-04-10 01:08:47.692652
-56	7	10	M.Waqar-AI-ML.pdf	uploads/7/10/M.Waqar-AI-ML.pdf	89e02147-d6cc-4565-882f-be44b45f01a6	2026-04-10 01:09:01.209771
-57	7	11	Employee Handbook Final 2026 (1).pdf	uploads/7/11/Employee Handbook Final 2026 (1).pdf	5bfb001c-9a4f-46df-8adc-e04adb23ff17	2026-04-10 01:16:21.399373
-58	7	12	Global_Reach.pdf	uploads/7/12/Global_Reach.pdf	c2805548-10b9-4fb9-8d16-f59448c27d93	2026-04-10 08:46:16.979664
-59	7	14	ko260302a1.pdf	uploads/7/14/ko260302a1.pdf	c9a92899-e11b-48b2-878c-e0f59b1231df	2026-04-10 09:26:04.864075
-60	7	14	pak_economy_2026.pdf	uploads/7/14/pak_economy_2026.pdf	f6faaa40-c7a9-49e9-a600-e186da6577a2	2026-04-10 09:26:34.934545
-61	7	14	070d119b-en.pdf	uploads/7/14/070d119b-en.pdf	a64dd3a1-111d-4c4c-8160-20df9aaff992	2026-04-10 09:32:16.83012
-62	7	12	a2-reference-guide-012825.pdf	uploads/7/12/a2-reference-guide-012825.pdf	962c06f6-273a-43ce-beee-2dd217a5debe	2026-04-10 10:51:33.003339
-63	7	13	ExerciseBook.pdf	uploads/7/13/ExerciseBook.pdf	28939fc4-20a2-4665-aef0-af6cf993a78c	2026-04-10 22:30:32.29428
-64	7	13	ebook_8WeekShred.pdf	uploads/7/13/ebook_8WeekShred.pdf	02d14d42-48bd-440b-a922-dcdf390778bf	2026-04-10 22:31:17.992496
-65	8	17	zayan.pdf	uploads/8/17/zayan.pdf	193b5e95-45e0-4b52-aafd-0207f12b29a7	2026-04-12 10:14:47.212012
-66	8	16	AI-Studio-247-Job-Brief-B-Modules-2-5.docx.pdf	uploads/8/16/AI-Studio-247-Job-Brief-B-Modules-2-5.docx.pdf	fce6ea36-161b-45ca-99a1-cd84f82eb856	2026-04-12 10:28:06.316609
-\.
-
-
+-- COPY public.file_uploads (id, user_id, workspace_id, file_name, file_path, file_key, uploaded_at) FROM stdin;
+-- 55	7	10	M.Waqar - Full Stack Developer.pdf	uploads/7/10/M.Waqar - Full Stack Developer.pdf	6f5019bd-d8ec-4560-876f-43e9ba4eabc9	2026-04-10 01:08:47.692652
+-- 56	7	10	M.Waqar-AI-ML.pdf	uploads/7/10/M.Waqar-AI-ML.pdf	89e02147-d6cc-4565-882f-be44b45f01a6	2026-04-10 01:09:01.209771
+-- 57	7	11	Employee Handbook Final 2026 (1).pdf	uploads/7/11/Employee Handbook Final 2026 (1).pdf	5bfb001c-9a4f-46df-8adc-e04adb23ff17	2026-04-10 01:16:21.399373
+-- 58	7	12	Global_Reach.pdf	uploads/7/12/Global_Reach.pdf	c2805548-10b9-4fb9-8d16-f59448c27d93	2026-04-10 08:46:16.979664
+-- 59	7	14	ko260302a1.pdf	uploads/7/14/ko260302a1.pdf	c9a92899-e11b-48b2-878c-e0f59b1231df	2026-04-10 09:26:04.864075
+-- 60	7	14	pak_economy_2026.pdf	uploads/7/14/pak_economy_2026.pdf	f6faaa40-c7a9-49e9-a600-e186da6577a2	2026-04-10 09:26:34.934545
+-- 61	7	14	070d119b-en.pdf	uploads/7/14/070d119b-en.pdf	a64dd3a1-111d-4c4c-8160-20df9aaff992	2026-04-10 09:32:16.83012
+-- 62	7	12	a2-reference-guide-012825.pdf	uploads/7/12/a2-reference-guide-012825.pdf	962c06f6-273a-43ce-beee-2dd217a5debe	2026-04-10 10:51:33.003339
+-- 63	7	13	ExerciseBook.pdf	uploads/7/13/ExerciseBook.pdf	28939fc4-20a2-4665-aef0-af6cf993a78c	2026-04-10 22:30:32.29428
+-- 64	7	13	ebook_8WeekShred.pdf	uploads/7/13/ebook_8WeekShred.pdf	02d14d42-48bd-440b-a922-dcdf390778bf	2026-04-10 22:31:17.992496
+-- 65	8	17	zayan.pdf	uploads/8/17/zayan.pdf	193b5e95-45e0-4b52-aafd-0207f12b29a7	2026-04-12 10:14:47.212012
+-- 66	8	16	AI-Studio-247-Job-Brief-B-Modules-2-5.docx.pdf	uploads/8/16/AI-Studio-247-Job-Brief-B-Modules-2-5.docx.pdf	fce6ea36-161b-45ca-99a1-cd84f82eb856	2026-04-12 10:28:06.316609
+-- \.
 --
--- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
 --
-
-COPY public.users (id, email, collection_name, add_date) FROM stdin;
-7	waqardanish1@gmail.com	rag_document_collection_user_3ce72e53-32f8-449d-84cd-92d9e0e7b174	2026-04-10 01:01:31.334181
-8	stelin990@gmail.com	rag_document_collection_user_298d7aef-d163-4ba9-8c35-5a0738fb2444	2026-04-12 10:13:04.987005
-\.
+-- --
+-- -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
+-- --
+--
+-- COPY public.users (id, email, collection_name, add_date) FROM stdin;
+-- 7	waqardanish1@gmail.com	rag_document_collection_user_3ce72e53-32f8-449d-84cd-92d9e0e7b174	2026-04-10 01:01:31.334181
+-- 8	stelin990@gmail.com	rag_document_collection_user_298d7aef-d163-4ba9-8c35-5a0738fb2444	2026-04-12 10:13:04.987005
+-- \.
 
 
 --
 -- Data for Name: workspaces; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.workspaces (id, user_id, name, tags, description) FROM stdin;
-9	7	default		default workspace
-10	7	me	me, self	personal
-11	7	allzone	hr,company	handbook
-12	7	Nasa	nasa, global, space	Nasa PDF processing
-13	7	Workout	gym, workout	gym motiviation health
-14	7	Economy	economy, wealth, countries	Country economy discussions and review
-15	7	hrm	hrm, hr	workspace for hrm
-16	8	default		default workspace
-17	8	test	test, verfiy	testing
-\.
+-- COPY public.workspaces (id, user_id, name, tags, description) FROM stdin;
+-- 9	7	default		default workspace
+-- 10	7	me	me, self	personal
+-- 11	7	allzone	hr,company	handbook
+-- 12	7	Nasa	nasa, global, space	Nasa PDF processing
+-- 13	7	Workout	gym, workout	gym motiviation health
+-- 14	7	Economy	economy, wealth, countries	Country economy discussions and review
+-- 15	7	hrm	hrm, hr	workspace for hrm
+-- 16	8	default		default workspace
+-- 17	8	test	test, verfiy	testing
+-- \.
 
 
 --
