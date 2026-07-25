@@ -73,8 +73,8 @@ app.add_middleware(
 )
 
 
-@app.post("/register")
-async def register(user: UserRegister):
+@app.post("/access")
+async def access(user: UserRegister):
     email = user.email
     try:
         results = await InngestService(None).register_user(email)
@@ -106,7 +106,7 @@ async def file_saver(file: UploadFile, user_id: str, workspace_id: str):
 
 
 @app.post("/upload")
-async def upload(
+async def upload_pdf_file(
     user_id: str = Form(...),
     workspace_id: str = Form(...),
     files: list[UploadFile] = list[File(...)],
@@ -140,7 +140,7 @@ async def upload(
 
 
 @app.post("/ingest")
-async def upload(file: IngestDocument):
+async def ingest_file(file: IngestDocument):
 
     inngest_runs = await inngest_client.send(
         inngest.Event(
@@ -159,7 +159,7 @@ async def upload(file: IngestDocument):
 
 
 @app.post("/query")
-async def upload(user_query: QueryPDF):
+async def query_rag(user_query: QueryPDF):
 
     inngest_runs = await inngest_client.send(
         inngest.Event(
@@ -179,7 +179,7 @@ async def upload(user_query: QueryPDF):
 
 
 @app.post("/workspace")
-async def upload(workspace: CreateWorkspace):
+async def create_workspace(workspace: CreateWorkspace):
     DatabaseService().create_workspace(
         workspace.name, workspace.description, workspace.user_id, workspace.tags
     )
@@ -189,14 +189,14 @@ async def upload(workspace: CreateWorkspace):
 
 
 @app.get("/user_uploads")
-async def upload(user_id: int, workspace_id: int):
+async def get_user_uploads(user_id: int, workspace_id: int):
     uploads = DatabaseService().find_files(user_id, workspace_id)
 
     return {"uploads": uploads}
 
 
 @app.post("/ingest_live_url")
-async def test(live_req: IngestLiveDocument):
+async def ingest_live_url(live_req: IngestLiveDocument):
     file_key = str(uuid.uuid4())
     DatabaseService().create_file_upload(
         file_key,

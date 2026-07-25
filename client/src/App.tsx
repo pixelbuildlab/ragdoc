@@ -11,7 +11,7 @@ function App() {
   const setupUser = React.useCallback(
     async (email: string) => {
       try {
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/register`, {
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/access`, {
           method: 'POST',
           body: JSON.stringify({ email }),
           headers: { 'Content-Type': 'application/json' },
